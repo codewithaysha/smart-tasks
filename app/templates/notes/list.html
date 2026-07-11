@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}Notes - Smart Tasks{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Notes</h1>
+    <a href="{{ url_for('notes.create_note') }}" class="btn btn-primary">+ New Note</a>
+</div>
+
+{% if notes %}
+    <div class="row">
+        {% for note in notes %}
+            <div class="col-md-4 mb-3">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ note.title }}</h5>
+                        <p class="card-text">{{ note.content[:100] }}...</p>
+                        {% if note.tags %}
+                            <div class="mb-2">
+                                {% for tag in note.tags %}
+                                    <span class="badge bg-info">{{ tag }}</span>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        <small class="text-muted">Category: {{ note.category or 'Uncategorized' }}</small>
+                    </div>
+                    <div class="card-footer bg-white">
+                        <a href="{{ url_for('notes.edit_note', note_id=note._id) }}" class="btn btn-sm btn-warning">Edit</a>
+                        <form method="POST" action="{{ url_for('notes.delete_note', note_id=note._id) }}" style="display:inline;">
+                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Delete this note?')">Delete</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="alert alert-info">
+        No notes yet. <a href="{{ url_for('notes.create_note') }}">Create your first note</a>
+    </div>
+{% endif %}
+{% endblock %}
